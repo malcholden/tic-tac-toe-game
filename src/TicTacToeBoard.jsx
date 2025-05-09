@@ -1,33 +1,48 @@
 import { TurnContext } from "./App";
-import { useContext } from "react";
+import { useState, useContext } from "react";
+import './App.css'
+import Box from "./Box";
+
 
 export default function TicTacToeBoard(){
     
     const {whoseTurn, setWhoseTurn} = useContext(TurnContext);
+    const {boxContent, setBoxContent} = useState("X");
+
     
+
     function turnMade(){
         setWhoseTurn(prev => (prev === "X" ? "O" : "X"));
-        
+        this.className="selectedBox";
     }   
 
     return(
         <div className="m-10">
             <div>
+                <Box/>
+                <Box/>
+                <Box/>
+                {/* <button onClick={turnMade}></button>
                 <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
-               
+                <button onClick={turnMade}></button> */}
             </div>
             <div>
+            <Box/>
+            <Box/>
+            <Box/>
+                {/* <button onClick={turnMade}></button>
                 <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
+                <button onClick={turnMade}></button> */}
             </div>
             <div>
+            <Box/>
+            <Box/>
+            <Box/>
+                {/* <button onClick={turnMade}></button>
                 <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
-                <button onClick={turnMade}></button>
+                <button onClick={turnMade}></button> */}
             </div>
+            <button className="resetButton">Reset Game</button>
         </div>
         
     )

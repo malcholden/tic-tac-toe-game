@@ -9,7 +9,9 @@ export default function TicTacToeBoard(){
     const {whoseTurn, setWhoseTurn} = useContext(TurnContext);
     const {boxContent, setBoxContent} = useState("X");
 
-    
+    /**
+     *  DO RESEARCH INTO MAPPING. POSSIBLY MAKE BOX BE FUNCITON INSTEAD OF CLASS, AND THEN MAP OUT ARRAY OF USESTATES FOR BOXES DISPLAY?
+     */
 
     function turnMade(){
         setWhoseTurn(prev => (prev === "X" ? "O" : "X"));

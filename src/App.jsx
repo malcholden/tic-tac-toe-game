@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useContext, createContext, useState } from 'react'
-
+import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
 import './App.css'
 
 // contexts for whose turn it is as well as the x's and o's
@@ -13,6 +13,8 @@ export const winningCombos=[
                     [1,2,3], [4,5,6], [7,8,9],
                     [1,4,7], [2,5,8], [3,6,9],
                     [1,5,9], [3,5,7]]
+
+
 
 /**
  * Function to draw a clickable button square.
@@ -30,13 +32,7 @@ function MySquare(props){
   const [beenPlayed, setBeenPlayed] = useState(false);
   let id = props.id;
 
-  /**
-   * Function for determining if a player won, i.e. does their array of squares match one of the winning combos?
-   *
-   */
-  function didIWin(){
 
-  }
 
 
   /**
@@ -51,21 +47,26 @@ function MySquare(props){
 
       // determines who the owner is and who gains the square to add to array
       if(whoseTurn=="X"){
-        setXSquares([...xSquares,props.id])
+        setXSquares([...xSquares,props.id]);
+        // if(didIWin(xSquares)){
+        //   console.log("GAME OVER");
+        // }
       }else{
         setOSquares([...oSquares,props.id])
+        // if(didIWin(oSquares)){
+        //   console.log("GAME OVER");
+        // }
       }
 
       // sets next player up
       setWhoseTurn(prev => (prev === "X" ? "O" : "X"));
 
-      // determines if a player won
-      didIWin();
       
   }
 
   return(
-    <button 
+    <button
+      className="TTbutton" 
       onClick={handleClick}
       disabled={beenPlayed}
     >{squareVal}</button>  );
@@ -81,13 +82,58 @@ function App() {
   const [whoseTurn, setWhoseTurn] = useState("X");
   const [xSquares, setXSquares] = useState([]);
   const [oSquares, setOSquares] = useState([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWinner, setGameWinner] = useState();
+
+
+/**
+   * Function for determining if a player won, i.e. does their array of squares match one of the winning combos?
+   *
+   */
+  function didIWin(pSquares){
+    let player = pSquares.sort();
+   
+    
+    // just for printing / debugging
+    let sS = JSON.stringify(player);
+    let bS = JSON.stringify(winningCombos);
+    console.log("player: ",sS);
+    console.log("winning: ",bS);
+
+
+    return winningCombos.some(subarray =>
+      subarray.every(value => player.includes(value))
+    );
+    
+  }
+
 
   // when a square is clicked, log what the current state of x-squares and o-squares is
   useEffect(()=>{
 
     console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
-
+    if(oSquares.length > 0 && xSquares.length > 0){
+      if(didIWin(oSquares)){
+          // alert("GAME OVER, O WINS");
+          setGameWinner("O");
+          setGameOver(true);
+        }
+      if(didIWin(xSquares)){
+        // alert("GAME OVER, X WINS");
+        setGameWinner("X");
+        setGameOver(true);
+      }
+    }
+      
   });
+  
+  function cleanUpGame(){
+    setGameOver(false);
+    setGameWinner("");
+    setOSquares([]);
+    setXSquares([]);
+    setWhoseTurn("X");
+  }
 
 
   return (
@@ -120,10 +166,25 @@ function App() {
              </div>
          </div>
 
+
+        
+
+
       </div>
       <div>
         <h2>It is now {whoseTurn}'s turn</h2>
       </div>
+      <Dialog open={gameOver} onClose={() => setGameOver(false)} className="relative z-50">
+          <div className="gameOverScreen">
+            <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
+              <DialogTitle className="font-bold">GAME OVER</DialogTitle>
+              <Description>Player {gameWinner} has won the game.</Description>
+              <div className="flex gap-4">
+                <button onClick={() => cleanUpGame()}>Play Again</button>
+              </div>
+            </DialogPanel>
+          </div>
+        </Dialog>
     </oContext.Provider>
     </xContext.Provider>
     </TurnContext.Provider>

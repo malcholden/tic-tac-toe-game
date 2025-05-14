@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useContext, createContext, useState } from 'react'
-import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react'
+import { Description, Dialog, DialogPanel, DialogTitle, Button } from '@headlessui/react'
 import './App.css'
 
 // contexts for whose turn it is as well as the x's and o's
 export const TurnContext = createContext();
 export const xContext = createContext();
 export const oContext = createContext();
+export const playedContext = createContext();
 
 // these are combos needed to win the game
 export const winningCombos=[
@@ -14,7 +15,7 @@ export const winningCombos=[
                     [1,4,7], [2,5,8], [3,6,9],
                     [1,5,9], [3,5,7]]
 
-
+export const finishedBoard = [ 1, 2, 3, 4, 5, 6, 7, 8, 9 ]
 
 /**
  * Function to draw a clickable button square.
@@ -30,6 +31,8 @@ function MySquare(props){
   const {oSquares, setOSquares} = useContext(oContext);
   const [squareVal, setSquareVal] = useState(null);
   const [beenPlayed, setBeenPlayed] = useState(false);
+  const {squaresPlayed, setSquaresPlayed} = useContext(playedContext);
+
   let id = props.id;
 
 
@@ -44,7 +47,8 @@ function MySquare(props){
 
       // marks that square has been played
       setBeenPlayed(true);
-
+      setSquaresPlayed([...squaresPlayed,props.id]);
+    
       // determines who the owner is and who gains the square to add to array
       if(whoseTurn=="X"){
         setXSquares([...xSquares,props.id]);
@@ -52,7 +56,7 @@ function MySquare(props){
         //   console.log("GAME OVER");
         // }
       }else{
-        setOSquares([...oSquares,props.id])
+        setOSquares([...oSquares,props.id]);
         // if(didIWin(oSquares)){
         //   console.log("GAME OVER");
         // }
@@ -84,7 +88,7 @@ function App() {
   const [oSquares, setOSquares] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   const [gameWinner, setGameWinner] = useState();
-
+  const [squaresPlayed, setSquaresPlayed] = useState([]);
 
 /**
    * Function for determining if a player won, i.e. does their array of squares match one of the winning combos?
@@ -111,19 +115,28 @@ function App() {
   // when a square is clicked, log what the current state of x-squares and o-squares is
   useEffect(()=>{
 
-    console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
-    if(oSquares.length > 0 && xSquares.length > 0){
+    console.log(squaresPlayed.sort());
+    console.log(finishedBoard);
+
+    // console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
+    if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
+      setGameWinner("TIE! Nobody won.");
+      setGameOver(true);
+      console.log("successful tie.");
+    }
+    else if(oSquares.length > 0 && xSquares.length > 0){
       if(didIWin(oSquares)){
           // alert("GAME OVER, O WINS");
-          setGameWinner("O");
+          setGameWinner("Player O has won the game.");
           setGameOver(true);
         }
       if(didIWin(xSquares)){
         // alert("GAME OVER, X WINS");
-        setGameWinner("X");
+        setGameWinner("Player X has won the game.");
         setGameOver(true);
       }
     }
+    
       
   });
   
@@ -133,12 +146,13 @@ function App() {
     setOSquares([]);
     setXSquares([]);
     setWhoseTurn("X");
+    window.location.reload(true)
   }
 
 
   return (
 
-    
+    <playedContext.Provider value={{squaresPlayed,setSquaresPlayed}}>
     <TurnContext.Provider value={{whoseTurn,setWhoseTurn}}>
     <xContext.Provider value={{xSquares,setXSquares}}>  
     <oContext.Provider value={{oSquares,setOSquares}}>
@@ -175,19 +189,28 @@ function App() {
         <h2>It is now {whoseTurn}'s turn</h2>
       </div>
       <Dialog open={gameOver} onClose={() => setGameOver(false)} className="relative z-50">
-          <div className="gameOverScreen">
-            <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-              <DialogTitle className="font-bold">GAME OVER</DialogTitle>
-              <Description>Player {gameWinner} has won the game.</Description>
-              <div className="flex gap-4">
-                <button onClick={() => cleanUpGame()}>Play Again</button>
-              </div>
-            </DialogPanel>
-          </div>
-        </Dialog>
+        {/* Center the entire dialog on screen */}
+        <div className="fixed inset-0 flex items-center justify-center bg-black/30">
+          {/* Dialog panel with centered content inside */}
+          <DialogPanel className="rounded-lg max-w-lg w-full border bg-white p-12 text-center">
+            <DialogTitle className="text-black font-bold text-xl">GAME OVER</DialogTitle>
+            <Description className="text-black mt-2">{gameWinner}</Description>
+            <div className="mt-4 flex justify-center">
+              <Button
+                className="rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-500 active:bg-green-700"
+                onClick={cleanUpGame}
+              >
+                Play Again
+              </Button>
+            </div>
+          </DialogPanel>
+        </div>
+      </Dialog>
+
     </oContext.Provider>
     </xContext.Provider>
     </TurnContext.Provider>
+    </playedContext.Provider>
   )
 }
 

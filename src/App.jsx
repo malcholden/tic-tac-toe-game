@@ -91,11 +91,15 @@ function App() {
   const [gameOver, setGameOver] = useState(false);
   const [gameWinner, setGameWinner] = useState();
   const [squaresPlayed, setSquaresPlayed] = useState([]);
+  
+  
+  {/* THIS IS THE CONFETTI SHIT */}
   const [showConfetti, setShowConfetti] = useState(false);
-
   const handleConfetti = () => {
     setShowConfetti(true)
  }
+
+ 
 /**
    * Function for determining if a player won, i.e. does their array of squares match one of the winning combos?
    *
@@ -126,7 +130,7 @@ function App() {
 
     // console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
     if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
-      handleConfetti();
+      handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
       setGameWinner("TIE! Nobody won.");
       setGameOver(true);
       console.log("successful tie.");
@@ -135,13 +139,13 @@ function App() {
     else if(oSquares.length > 0 && xSquares.length > 0){
       if(didIWin(oSquares)){
           // alert("GAME OVER, O WINS");
-          handleConfetti();
+          handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
           setGameWinner("Player O has won the game.");
           setGameOver(true);
          
         }
       if(didIWin(xSquares)){
-        handleConfetti();
+        handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
         // alert("GAME OVER, X WINS");
         setGameWinner("Player X has won the game.");
         setGameOver(true);
@@ -195,7 +199,8 @@ function App() {
         
 
 
-      </div>
+      </div> 
+      {/* THIS IS THE CONFETTI SHIT */}
       <div>
       {showConfetti && (
            <Confetti
@@ -206,6 +211,9 @@ function App() {
            />
          )}
       </div>
+
+
+
       <div>
         <h2>It is now {whoseTurn}'s turn</h2>
       </div>

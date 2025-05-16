@@ -137,14 +137,8 @@ function App() {
     console.log(finishedBoard);
 
     // console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
-    if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
-      setGameWinner("TIE! Nobody won.");
-      playTieSound();
-      setGameOver(true);
-      console.log("successful tie.");
-  
-    }
-    else if(oSquares.length > 0 && xSquares.length > 0){
+
+    if(oSquares.length > 0 && xSquares.length > 0){
       if(didIWin(oSquares)){
           // alert("GAME OVER, O WINS");
           handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
@@ -160,6 +154,14 @@ function App() {
         setGameOver(true);
       }
     }
+    else if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
+      setGameWinner("TIE! Nobody won.");
+      playTieSound();
+      setGameOver(true);
+      console.log("successful tie.");
+  
+    }
+
     
       
   });

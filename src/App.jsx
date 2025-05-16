@@ -154,7 +154,7 @@ function App() {
         setGameOver(true);
       }
     }
-    else if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
+    if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
       setGameWinner("TIE! Nobody won.");
       playTieSound();
       setGameOver(true);

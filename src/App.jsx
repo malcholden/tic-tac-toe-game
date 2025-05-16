@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect} from 'react';
 import { useContext, createContext, useState } from 'react'
 import { Description, Dialog, DialogPanel, DialogTitle, Button } from '@headlessui/react'
 import './App.css'
 import Confetti from 'react-confetti';
-
+import useSound from 'use-sound';
+import winSfx from './assets/winhorn.mp3';
+import tieSfx from './assets/losehorn.mp3';
+import sadcatgif from './assets/sadcat.gif';
+import CatPic from './CatPic';
 
 // contexts for whose turn it is as well as the x's and o's
 export const TurnContext = createContext();
@@ -66,7 +70,6 @@ function MySquare(props){
 
       // sets next player up
       setWhoseTurn(prev => (prev === "X" ? "O" : "X"));
-
       
   }
 
@@ -92,6 +95,9 @@ function App() {
   const [gameWinner, setGameWinner] = useState();
   const [squaresPlayed, setSquaresPlayed] = useState([]);
   
+  // unnecessary?
+  const [playWinSound] = useSound(winSfx);
+  const [playTieSound] = useSound(tieSfx);
   
   {/* THIS IS THE CONFETTI SHIT */}
   const [showConfetti, setShowConfetti] = useState(false);
@@ -121,6 +127,8 @@ function App() {
     
   }
 
+  
+
 
   // when a square is clicked, log what the current state of x-squares and o-squares is
   useEffect(()=>{
@@ -130,8 +138,8 @@ function App() {
 
     // console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
     if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
-      handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
       setGameWinner("TIE! Nobody won.");
+      playTieSound();
       setGameOver(true);
       console.log("successful tie.");
   
@@ -141,13 +149,14 @@ function App() {
           // alert("GAME OVER, O WINS");
           handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
           setGameWinner("Player O has won the game.");
+          playWinSound();
           setGameOver(true);
-         
         }
       if(didIWin(xSquares)){
         handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
         // alert("GAME OVER, X WINS");
         setGameWinner("Player X has won the game.");
+        playWinSound();
         setGameOver(true);
       }
     }
@@ -171,6 +180,15 @@ function App() {
     <TurnContext.Provider value={{whoseTurn,setWhoseTurn}}>
     <xContext.Provider value={{xSquares,setXSquares}}>  
     <oContext.Provider value={{oSquares,setOSquares}}>
+
+    <div>
+    {showConfetti&&(<Confetti
+      width={window.innerWidth}
+      height={window.innerHeight}
+    />)}
+    </div>
+     
+      
       <div>
         <h1>Tic-Tac-Toe Game</h1>
       </div>
@@ -200,28 +218,20 @@ function App() {
 
 
       </div> 
-      {/* THIS IS THE CONFETTI SHIT */}
-      <div>
-      {showConfetti && (
-           <Confetti
-             width={windowSize.width}
-             height={windowSize.height}
-             recycle={false}
-             onConfettiComplete={() => setShowConfetti(false)}
-           />
-         )}
-      </div>
+      
 
 
 
       <div>
         <h2>It is now {whoseTurn}'s turn</h2>
       </div>
+      
       <Dialog open={gameOver} onClose={() => setGameOver(false)} className="relative z-50">
         {/* Center the entire dialog on screen */}
         <div className="fixed inset-0 flex items-center justify-center bg-black/30">
           {/* Dialog panel with centered content inside */}
           <DialogPanel className="rounded-lg max-w-lg w-full border bg-white p-12 text-center">
+            <CatPic winner={gameWinner}></CatPic>
             <DialogTitle className="text-black font-bold text-xl">GAME OVER</DialogTitle>
             <Description className="text-black mt-2">{gameWinner}</Description>
             <div className="mt-4 flex justify-center">

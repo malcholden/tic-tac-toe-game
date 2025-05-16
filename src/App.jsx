@@ -95,7 +95,7 @@ function App() {
   const [gameWinner, setGameWinner] = useState();
   const [squaresPlayed, setSquaresPlayed] = useState([]);
   
-  // unnecessary?
+  // sounds
   const [playWinSound] = useSound(winSfx);
   const [playTieSound] = useSound(tieSfx);
   

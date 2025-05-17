@@ -146,7 +146,7 @@ function App() {
           playWinSound();
           setGameOver(true);
         }
-      if(didIWin(xSquares)){
+      else if(didIWin(xSquares)){
         handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
         // alert("GAME OVER, X WINS");
         setGameWinner("Player X has won the game.");
@@ -154,7 +154,7 @@ function App() {
         setGameOver(true);
       }
     }
-    if (setGameWinner!="" && JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
+    if (!gameOver && JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
       setGameWinner("TIE! Nobody won.");
       playTieSound();
       setGameOver(true);

@@ -145,6 +145,7 @@ function App() {
           setGameWinner("Player O has won the game.");
           playWinSound();
           setGameOver(true);
+          return;
         }
       else if(didIWin(xSquares)){
         handleConfetti();{/* THIS IS THE CONFETTI SHIT */}
@@ -152,6 +153,7 @@ function App() {
         setGameWinner("Player X has won the game.");
         playWinSound();
         setGameOver(true);
+        return;
       }
     }
     if (!gameOver && JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
@@ -159,6 +161,7 @@ function App() {
       playTieSound();
       setGameOver(true);
       console.log("successful tie.");
+      return;
   
     }
 

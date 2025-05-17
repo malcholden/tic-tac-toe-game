@@ -136,7 +136,6 @@ function App() {
     console.log(squaresPlayed.sort());
     console.log(finishedBoard);
 
-    // console.log("X-Squares: ", xSquares, " // O-Squares: ", oSquares);
 
     if(oSquares.length > 0 && xSquares.length > 0){
       if(didIWin(oSquares)){

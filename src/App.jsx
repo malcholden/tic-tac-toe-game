@@ -92,7 +92,7 @@ function App() {
   const [xSquares, setXSquares] = useState([]);
   const [oSquares, setOSquares] = useState([]);
   const [gameOver, setGameOver] = useState(false);
-  const [gameWinner, setGameWinner] = useState();
+  const [gameWinner, setGameWinner] = useState("");
   const [squaresPlayed, setSquaresPlayed] = useState([]);
   
   // sounds
@@ -154,7 +154,7 @@ function App() {
         setGameOver(true);
       }
     }
-    if (JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
+    if (setGameWinner!="" && JSON.stringify([...squaresPlayed].sort()) === JSON.stringify(finishedBoard)) {
       setGameWinner("TIE! Nobody won.");
       playTieSound();
       setGameOver(true);
